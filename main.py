@@ -24,63 +24,95 @@ pd.set_option("display.max_colwidth", -1)
 def main() -> None:
     """
     Runs model training or visualization.
-
+    运行训练模型或者运行可视化程序
     """
+    # 定义参数解析器
     parser = ArgumentParser(description="SoccerPredictor:", formatter_class=ArgumentDefaultsHelpFormatter)
     subparsers = parser.add_subparsers(title="Modes to run", dest="command")
 
     # Trainer args
+    # 定义Trainer参数
     trainer_parser = subparsers.add_parser(RunMode.Train.value, help="Trains model and makes predictions.",
                                            formatter_class=ArgumentDefaultsHelpFormatter)
+    
+    # 恢复先前保存模型的训练，如果没有通过--name指定模型的名称或前缀，则尝试加载最新保存的模型。
     trainer_parser.add_argument("--resume", action="store_true", default=False,
                                 help="Resumes training of previously saved model. "
                                      "Tries to load the latest model saved if no name or prefix specified via --name.")
+    # 训练模型时的epochs参数
     trainer_parser.add_argument("--epochs", type=int, action="store", default=1,
                                 help="Number of epochs to train model for.")
+    
+    # 每个队最后用来做test的样本数量
     trainer_parser.add_argument("--ntest", type=int, action="store", default=10,
                                 help="Number of last samples used for testing for each team.")
+    
+    # 每个队最后丢弃的样本数量
     trainer_parser.add_argument("--ndiscard", type=int, action="store", default=0,
                                 help="Number of last samples to discard for each team.")
+    
+    # 用作输入网络的数据窗口大小的时间步数。
     trainer_parser.add_argument("--timesteps", type=int, action="store", default=40,
                                 help="Number of timesteps to use as data window size for input to network.")
+    
+    # 是否不经过训练直接返回预测值
     trainer_parser.add_argument("--predict", action="store_true", default=False,
                                 help="Whether to rerun predictions without any training.")
+    
+    # 如果没有改善，在学习率衰减之前要容忍多少个历时。如果是0，则关闭。
     trainer_parser.add_argument("--lrpatience", type=int, action="store", default=20,
                                 help="How many epochs to tolerate before decaying learning rate if no improvement. "
                                      "Turned off if 0.")
+    
+    # 耐心超过后，学习率的衰减程度是多少。
     trainer_parser.add_argument("--lrdecay", type=float, action="store", default=0.95,
                                 help="How much to decay learning rate after patience exceeded.")
+    
+    # 生成随机数的种子
     trainer_parser.add_argument("--seed", type=int, action="store",
                                 help="Specifies seed for rng.")
+    
+    # 保存模型的频率（历时的数量）。如果是0，则不进行中间保存。
     trainer_parser.add_argument("--savefreq", type=int, action="store", default=50,
                                 help="How often (number of epochs) to save models. No intermediate saving if 0.")
+    
+    # 打印当前摘要的频率（历时数）。如果是0，则没有中间打印。
     trainer_parser.add_argument("--printfreq", type=int, action="store", default=10,
                                 help="How often (number of epochs) to print current summaries. "
                                      "No intermediate printing if 0.")
+    
     trainer_parser.add_argument("--verbose", type=int, action="store", choices=VERBOSITY_LEVELS, default=1,
                                 help="Level of verbosity.")
 
     # Visualizer args
     visualizer_parser = subparsers.add_parser(RunMode.Vis.value, help="Runs visualization of predictions.",
                                               formatter_class=ArgumentDefaultsHelpFormatter)
+    
+    # 用于Dash可视化的自定义端口。
     visualizer_parser.add_argument("--port", type=int, action="store", default=8050,
                                    help="Custom port for Dash visualization.")
+    
+    # 用于Dash可视化的自定义主机。可以用0表示0.0.0.0的快捷方式。
     visualizer_parser.add_argument("--host", type=str, action="store", default="127.0.0.1",
                                    help="Custom host for Dash visualization. Can use 0 for 0.0.0.0 shortcut.")
 
     # Backtester args
     backtester_parser = subparsers.add_parser(RunMode.Backtest.value, help="Runs backtesting on trained models.",
                                               formatter_class=ArgumentDefaultsHelpFormatter)
+    
+    # 保存训练后的模型的文件夹的路径。
     backtester_parser.add_argument("--path", type=str, action="store", default=f"{DATA_DIR}{MODEL_DIR}",
                                    help="Path to folder where the trained models are saved.")
 
     # common args for trainer and visualizer
+    # 尝试加载给定名称前缀的最新保存的模型。如果指定确切的目录名称，则加载确切的模型。
     for p in [trainer_parser, visualizer_parser]:
         p.add_argument("--name", type=str, action="store",
                        help="Tries to load the latest saved model with given name prefix. "
                             "Loads exact model if exact dir name specified.")
 
     # Common args for visualizer and backtester
+    # 在预测哪支球队下注时，会忽略小于给定金额的赔率。
     for p in [visualizer_parser, backtester_parser]:
         p.add_argument("--ignoreodds", type=float, action="store", default=1.10,
                        help="Ignores odds less than given amount when predicting which team to bet on.")
@@ -114,13 +146,17 @@ def main() -> None:
             print("> Received CTRL+C command. Exiting.")
     elif args.command == RunMode.Train.value:
         print("Running model...")
+        # 拿到命令行输入的参数
         train_args, _ = trainer_parser.parse_known_args()
+        # 实例化单例模式全局config对象
         config = SPConfig()
 
         # Implicitly set resume to true if we are predicting only
+        # 如果设置直接预测则resume改成True，加载上次的参数
         if train_args.predict and not train_args.resume:
             train_args.resume = True
 
+        # 检查参数是否符合要求
         check_trainer_args(trainer_parser, train_args)
         config.set_args(train_args)
         print(train_args)
@@ -130,18 +166,23 @@ def main() -> None:
             dbmanager.connect()
 
             # Load previous settings if we resume training
+            # 如果我们恢复训练，加载以前的设置
             if train_args.resume:
                 print("Resuming training, loading previous settings... "
                       "Any conflicting parameters will be ignored.")
 
                 # Load previous settings
+                # 加载以前的设置
                 folder = get_latest_models_dir(train_args.name)
                 model_settings = get_model_settings_file(folder)
                 # Restore original config
+                # 重置配置项
                 config.restore_args(model_settings)
+                # 设置随机数种子
                 set_rng_seed(config.seed)
 
                 from soccerpredictor.trainer.trainer import SPTrainer
+                # 实例化Trainer
                 trainer = SPTrainer(dbmanager, model_settings=model_settings, folder=folder)
             else:
                 # Need to generate folder prefix before seeding random number generators
@@ -194,7 +235,7 @@ def set_rng_seed(seed: Optional[int]) -> None:
 def check_trainer_args(parser: ArgumentParser, args: Namespace) -> None:
     """
     Checks trainer mode args.
-
+    检查训练模式下参数是否符合要求
     :param parser: Argument parser.
     :param args: Given arguments.
     """

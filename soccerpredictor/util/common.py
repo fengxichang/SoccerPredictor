@@ -130,9 +130,9 @@ def get_stats_file(path: Path, dataset: Dataset) -> pd.DataFrame:
 def get_latest_models_dir(name: str = "") -> Path:
     """
     Gets name of latest model dir sorted by time of creation.
-
+    找到指定名字下最新创建的模型文件夹
     Name argument can be specified to load exact folder or latest folder with given prefix.
-
+    可以指定名称参数来加载确切的文件夹或带有给定前缀的最新文件夹。 如果名称未指定，加载最新的文件夹。
     :param name: Exact name, or a part of name of the model to load.
     :return: Latest models dir path.
     """

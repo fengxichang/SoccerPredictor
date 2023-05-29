@@ -8,7 +8,7 @@ from soccerpredictor.util.constants import DATA_DIR, DB_DIR, DB_FILE
 class SPDBManager:
     """
     Used to handle database connection and to query data.
-
+    连接数据库和查询数据
     """
 
     def __init__(self) -> None:

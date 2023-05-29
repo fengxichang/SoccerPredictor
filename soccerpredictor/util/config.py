@@ -25,6 +25,11 @@ class SPConfig(metaclass=SPSingleton):
     during consecutive runs, the config just reloads previous ones and ignores the new ones.
     Fixed arguments are restored by `restore_args` method, other arguments can be changed.
 
+    存储用户在运行程序时传递的参数。
+    参数在第一次运行时被设置，在恢复程序时被恢复，以避免在两次运行之间改变重要的参数。
+    在运行期间改变重要参数。如果在连续运行期间指定了相互冲突的参数
+    的时候，配置只是重新加载以前的参数，而忽略新的参数。
+    固定的参数由`restore_args`方法恢复，其他参数可以被改变。
     """
 
     def __init__(self) -> None:

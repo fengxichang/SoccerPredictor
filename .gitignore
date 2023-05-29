@@ -132,3 +132,4 @@ dmypy.json
 soccerpredictor/__pycache__/
 soccerpredictor/*/__pycache__/
 soccerpredictor/data/db/*
+.DS_Store
