@@ -18,7 +18,9 @@ class SPDataLoader:
     Loads fixtures data and teams data needed to run model.
     Performs basic checks for any nan values and preprocesses data properly (creates new columns,
     encodes teams names, scales features, etc.).
-
+    加载运行模型所需的固定装置数据和团队数据。
+    对任何nan值进行基本检查，并对数据进行适当的预处理（创建新列、
+    编码球队名称，缩放特征，等等）。
     Attributes:
         teams_names_bitlen: Bitlength required to encode all teams names.
         teams: All teams names.
@@ -75,28 +77,38 @@ class SPDataLoader:
     def load_and_process_fixtures_data(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """
         Loads fixtures data ordered by date.
+        装入按日期排序的数据。装入按日期排序的数据。
 
         The split guarantees that there will be at least N samples for predict dataset given by
         NPREDICT. Also, there will approx. the same number on test samples given by ntest argument.
+        分割保证了预测数据集至少有N个样本，由
+        NPREDICT。此外，还有大约相同数量的测试样本，由ntest参数给出。
 
         The exact number of required samples for test/predict dataset cannot be guaranteed due to
         different number of predict/test/discard samples because matches are not always played
         successively, so some teams can play more often within a certain period of time.
+        测试/预测数据集所需样本的确切数量不能保证，因为
+        预测/测试/丢弃样本的数量不同，因为比赛并不总是连续进行的。
+        连续进行的，所以有些球队在一定时间内可以更频繁地进行比赛。
 
         Thus, in order to avoid overlapping datasets, it is probably impossible to ensure the exact
         numbers of samples when doing backtesting in general.
-
+        因此，为了避免数据集的重叠，在一般情况下，可能无法确保准确的
+        一般来说，在做回溯测试时，可能无法确保准确的样本数量。
         :return: Train, test, and predict fixtures datasets.
         """
         df = self._dbmanager.query_fixtures_data(self._seasons)
         if df.empty:
             raise ValueError("Empty fixtures dataframe.")
 
+        # 撤销上赛季CH联赛的所有比赛，以加快训练速度。 
         df = self._drop_last_season_championship_matches(df)
 
         self.teams = get_unique_teams(df)
+        # 获取数据框中上个赛季PL的独特球队名称的列表。
         self.last_season_teams = get_last_season_unique_teams(df)
         # Get fixtures ids for each team
+        # 获取每支球队的比赛数据id
         teams_fixtures_ids = {t: df[(df["home"] == t) | (df["away"] == t)].loc[:, "id"].tolist() for t in self.teams}
 
         self._check_missing_columns(df)
@@ -172,6 +184,8 @@ class SPDataLoader:
         """
         Drops all matches from CH league for last season to speed up training a little bit.
         They wont be needed since we care only about PL teams.
+        撤销上赛季CH联赛的所有比赛，以加快训练速度。
+        因为我们只关心PL球队，所以不需要他们。
 
         :param df: Original dataset.
         :return: Dataset without last season CH teams fixtures.

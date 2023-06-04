@@ -4,7 +4,6 @@ import pandas as pd
 from pathlib import Path
 import re
 from typing import Any, Dict, List
-
 from soccerpredictor.util.constants import *
 from soccerpredictor.util.enums import Dataset
 
@@ -188,6 +187,7 @@ def get_latest_models_dir(name: str = "") -> Path:
 def get_unique_teams(df: pd.DataFrame) -> List[str]:
     """
     Gets a list of unique teams names in the dataframe.
+    返回dataframe中球队list
 
     :param df: Dataframe to be processed.
     :return: Sorted list of unique teams names.

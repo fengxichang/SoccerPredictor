@@ -21,7 +21,7 @@ from soccerpredictor.util.enums import Dataset, SaveLoad, TargetVariable
 class SPTrainer:
     """
     Takes care of training, testing and prediction of each particular model.
-
+    负责每个特定模型的训练、测试和预测。
     Attributes:
         models: Models used.
         train_stats: Train statistics.
@@ -63,6 +63,7 @@ class SPTrainer:
         self._previous_timestamp = ""
         self._previous_epochs = 0
         self._total_epochs_passed = 0
+        # 如果model_settings是空则返回空字典
         self._model_settings = {} if not model_settings else model_settings
         self._runtimes_per_epoch = []
         self._teams_tuples = self._dbmanager.query_teams_ids_names_tuples()
@@ -84,7 +85,7 @@ class SPTrainer:
     def run(self) -> None:
         """
         Runs training of the model for given number of epochs.
-
+        在给定的epochs运行模型的训练。
         """
         st = time.time()
         df_train, df_test, df_predict = self._preload()
@@ -117,12 +118,13 @@ class SPTrainer:
     def _preload(self) -> Tuple[pd.DataFrame, pd.DataFrame, pd.DataFrame]:
         """
         Loads train, test, and predict teams data for each model, and build models.
-
+        为每个模型加载训练、测试和预测球队数据，并建立模型。
         :return: Train, test, and predict datasets.
         """
         print("Loading data...")
 
         # Load fixtures for all three datasets
+        # 为所有三个数据集加载固定装置
         df_train, df_test, df_predict = self.data_loader.load_and_process_fixtures_data()
 
         # Fit scalers on train dataset only

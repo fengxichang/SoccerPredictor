@@ -18,9 +18,12 @@ class SPDBManager:
     def query_fixtures_data(self, seasons: List[int]) -> pd.DataFrame:
         """
         Queries fixtures data for all teams in given seasons.
+        查询给定赛季的球队数据
 
         Renames some features as "[home|away]_<feature_name>" for easier access to columns within
         home and away team's viewpoints.
+        将一些特征重命名为"[home|away]_<feature_name>"，以便更容易地访问主队和客队观点中的栏目。
+        主队和客队的观点。
 
         :param seasons: Seasons include in query.
         :return: Fixtures df.
@@ -72,6 +75,7 @@ class SPDBManager:
     def query_teams_ids_names_tuples(self) -> Dict[str, int]:
         """
         Queries teams' names and ids from db and stores them into a dict in format
+        从数据库中查询球队的名称和ID，并将其存储在一个格式为Dict的文件中。
         <team_name>: <team_id>.
         Ordered by team id.
 
