@@ -34,8 +34,8 @@ DROPOUT = 0.0
 NONTEST_LR = 0.01
 NONTEST_DROPOUT = 0.0
 # Min and max season used
-MIN_SEASON = 13
-MAX_SEASON = 17
+MIN_SEASON = 2010
+MAX_SEASON = 2017
 
 # File names and dirs
 DATA_DIR = "./data/"

@@ -124,7 +124,7 @@ class SPTrainer:
         print("Loading data...")
 
         # Load fixtures for all three datasets
-        # 为所有三个数据集加载固定装置
+        # 为所有三个数据集加载数据
         df_train, df_test, df_predict = self.data_loader.load_and_process_fixtures_data()
 
         # Fit scalers on train dataset only
