@@ -4,7 +4,7 @@ import pandas as pd
 from sklearn.utils import compute_class_weight
 from typing import Any, Dict, List, Optional, Tuple
 
-from tensorflow.compat.v1 import Session, Graph, ConfigProto, set_random_seed
+import tensorflow as tf
 
 from soccerpredictor.trainer.network import SPNetwork
 from soccerpredictor.trainer.snapshot import SPSnapshot
@@ -59,25 +59,27 @@ class SPModel:
         self.best_acc = float("-inf")
         self.best_params = {}
 
+        tf.compat.v1.experimental.output_all_intermediates(True)
+
         # Create model's own session and graph
-        self.graph = Graph()
+        self.graph = tf.compat.v1.Graph()
 
         if FORCE_SINGLE_THREADS:
             with self.graph.as_default():
-                set_random_seed(config.seed)
+                tf.compat.v1.set_random_seed(config.seed)
                 if FORCE_SINGLE_CPU:
-                    cp = ConfigProto(intra_op_parallelism_threads=1,
+                    cp = tf.compat.v1.ConfigProto(intra_op_parallelism_threads=1,
                                      inter_op_parallelism_threads=1,
                                      device_count={"CPU": 1})
                 else:
-                    cp = ConfigProto(intra_op_parallelism_threads=1,
+                    cp = tf.compat.v1.ConfigProto(intra_op_parallelism_threads=1,
                                      inter_op_parallelism_threads=1)
 
-                self.session = Session(graph=self.graph, config=cp)
+                self.session = tf.compat.v1.Session(graph=self.graph, config=cp)
         else:
             with self.graph.as_default():
-                set_random_seed(config.seed)
-                self.session = Session(graph=self.graph)
+                tf.compat.v1.set_random_seed(config.seed)
+                self.session = tf.compat.v1.Session(graph=self.graph)
 
         self.tensorboard = SPTensorboard(self._team_name, self._target_team, self.session, folder_prefix)
         self.network = SPNetwork(self._team_name, self._target_team, self.session, lenc_bitlen)
@@ -369,7 +371,7 @@ class SPModel:
 
         cnt_total = {int(k): v for k, v in dict(sorted(Counter(values).items())).items()}
         cnt_ratio = {k: v / sum(cnt_total.values()) for k, v in cnt_total.items()}
-        class_weights = compute_class_weight("balanced", np.unique(values), values)
+        class_weights = compute_class_weight(class_weight="balanced", classes= np.unique(values), y =values)
         class_weights = dict(enumerate(class_weights))
 
         if verbose:

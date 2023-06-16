@@ -1,6 +1,7 @@
 import numpy as np
 from typing import Any, Dict, List, Tuple
 
+import tensorflow as tf
 from tensorflow.compat.v1 import Session
 
 import keras.backend as K

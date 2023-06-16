@@ -269,7 +269,7 @@ class SPTrainer:
             # Loop over matches
             for i, r in df_train.iterrows():
                 if verbose and self._verbose > 0:
-                    print(f"{i:04d}: {r['id']:04d} {r['date']} {r['season']:02d} {r['league']} {r['home']} {r['away']}")
+                    print(f"{i:04d}: {r['id']} {r['date']} {r['season']} {r['league']} {r['home']} {r['away']}")
                 team1 = r["home"]
                 team2 = r["away"]
 
@@ -343,7 +343,7 @@ class SPTrainer:
         # Loop over matches
         for i, r in df_test.iterrows():
             if verbose and self._verbose > 0:
-                print(f"{i:04d}: {r['id']:04d} {r['date']} {r['season']:02d} {r['league']} {r['home']} {r['away']}")
+                print(f"{i:04d}: {r['id']} {r['date']} {r['season']} {r['league']} {r['home']} {r['away']}")
             team1 = r["home"]
             team2 = r["away"]
 
@@ -481,7 +481,7 @@ class SPTrainer:
         # Loop over matches
         for i, r in df.iterrows():
             if verbose and self._verbose > 0:
-                print(f"{i:04d}: {r['id']:04d} {r['date']} {r['season']:02d} {r['league']} {r['home']} {r['away']}")
+                print(f"{i:04d}: {r['id']} {r['date']} {r['season']} {r['league']} {r['home']} {r['away']}")
             team1 = r["home"]
             team2 = r["away"]
             team1_preds = None

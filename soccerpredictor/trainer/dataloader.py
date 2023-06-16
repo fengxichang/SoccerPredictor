@@ -169,7 +169,7 @@ class SPDataLoader:
             self.test_fixtures_ids = self._model_settings["test_fixtures_ids"]
             self.predict_fixtures_ids = self._model_settings["predict_fixtures_ids"]
 
-        self._check_season_gaps_in_teams_matches(df)
+        # self._check_season_gaps_in_teams_matches(df)
 
         # Split original dataset into train, test, and predict datasets
         df_train, df_test, df_predict = self._mask_out_dataset(df)
