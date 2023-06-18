@@ -6,7 +6,8 @@ import re
 from typing import Any, Dict, List
 from soccerpredictor.util.constants import *
 from soccerpredictor.util.enums import Dataset
-
+import uuid
+import sqlite3
 
 def compressed_df_format(df: pd.DataFrame, teams_names_len: int = 5) -> pd.DataFrame:
     """
@@ -371,3 +372,40 @@ def get_mismatched_teams(list1: List[str], list2: List[str]) -> List[str]:
     :return: List of teams names that are not contained in each of given lists.
     """
     return list((set(list1) | set(list2)) - (set(list1) & set(list2)))
+
+def saveMetric(train_stats, train_teams, test_stats, test_teams, model, epoch):
+    # 1.硬盘上创建连接 
+    con = sqlite3.connect(f"file:./data/db/soccer.db?mode=rw", uri=True) 
+
+    # 获取cursor对象 
+    cur = con.cursor() 
+    sql = '''insert into Accuracy(id, model, team, type, epoch, loss, acc) 
+        values(?, ?, ?, ?, ?, ?, ?)'''
+        
+    try: 
+        for index, row in train_stats.iterrows():
+            for t in train_teams:
+                loss_value = row[(t, "loss")]
+                acc_value = row[(t, "acc")]
+                cur.execute(sql, (str(uuid.uuid4()), model, t, 'train', epoch, float(loss_value), float(acc_value)))
+                #提交事务 
+                con.commit() 
+                print('插入成功') 
+
+        for index, row in test_stats.iterrows():
+            for t in test_teams:
+                loss_value = row[(t, "loss")]
+                acc_value = row[(t, "acc")]
+                cur.execute(sql, (str(uuid.uuid4()), model, t, 'test', epoch, float(loss_value), float(acc_value)))
+                #提交事务 
+                con.commit() 
+                print('插入成功')         
+    except Exception as e: 
+        print(e) 
+        print('插入失败') 
+        con.rollback() 
+    finally: 
+        # 关闭游标 
+        cur.close() 
+        # 关闭连接 
+        con.close()

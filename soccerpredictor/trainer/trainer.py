@@ -387,6 +387,12 @@ class SPTrainer:
         """
         print("Epoch end summary:")
 
+        # 将acc loss保存到数据库
+        spc.saveMetric(self.train_stats, self.data_loader.train_teams,
+                       self.test_stats, self.data_loader.test_teams, self._folder_prefix, float(epoch))
+        
+        # do something with loss_value and acc_value
+
         improved_train_teams = []
         # For train-only teams we monitor improvement over the train dataset. Since the teams are not
         # evaluated on test dataset, we cannot measure whether models are capable to generalize or not.
