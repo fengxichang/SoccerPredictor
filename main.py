@@ -52,7 +52,7 @@ def main() -> None:
                                 help="Number of last samples to discard for each team.")
     
     # 用作输入网络的数据窗口大小的时间步数。
-    trainer_parser.add_argument("--timesteps", type=int, action="store", default=40,
+    trainer_parser.add_argument("--timesteps", type=int, action="store", default=10,
                                 help="Number of timesteps to use as data window size for input to network.")
     
     # 是否不经过训练直接返回预测值
