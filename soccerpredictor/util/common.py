@@ -63,6 +63,8 @@ def get_prediction_file(path: Path, predict_dataset: Dataset) -> pd.DataFrame:
         p = path.joinpath(f"{predict_dataset.value}_dataset_{PREDICT_STATS_FILE}")
     else:
         raise ValueError("Unknown prediction dataset.")
+    
+    print(p)
 
     if p.is_file():
         print(f"Loading previous prediction file of '{predict_dataset.value}' dataset.")
@@ -387,16 +389,15 @@ def saveMetric(train_stats, train_teams, test_stats, test_teams, model, epoch):
             for t in train_teams:
                 loss_value = row[(t, "loss")]
                 acc_value = row[(t, "acc")]
-                cur.execute(sql, (str(uuid.uuid4()), model, t, 'train', epoch, float(loss_value), float(acc_value)))
+                cur.execute(sql, (str(uuid.uuid4()), model, t, 'train', float(index), float(loss_value), float(acc_value)))
                 #提交事务 
                 con.commit() 
-                print('插入成功') 
 
         for index, row in test_stats.iterrows():
             for t in test_teams:
                 loss_value = row[(t, "loss")]
                 acc_value = row[(t, "acc")]
-                cur.execute(sql, (str(uuid.uuid4()), model, t, 'test', epoch, float(loss_value), float(acc_value)))
+                cur.execute(sql, (str(uuid.uuid4()), model, t, 'test', float(index), float(loss_value), float(acc_value)))
                 #提交事务 
                 con.commit() 
                 print('插入成功')         

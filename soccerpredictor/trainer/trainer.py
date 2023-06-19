@@ -386,11 +386,6 @@ class SPTrainer:
         :param epoch: Current epoch.
         """
         print("Epoch end summary:")
-
-        # 将acc loss保存到数据库
-        spc.saveMetric(self.train_stats, self.data_loader.train_teams,
-                       self.test_stats, self.data_loader.test_teams, self._folder_prefix, float(epoch))
-        
         # do something with loss_value and acc_value
 
         improved_train_teams = []
@@ -448,6 +443,9 @@ class SPTrainer:
 
         # Print actual loss/acc every nth epoch
         if final_epoch or (self._printfreq and (self._total_epochs_passed % self._printfreq) == 0):
+            # 将acc loss保存到数据库
+            spc.saveMetric(self.train_stats, self.data_loader.train_teams,
+                       self.test_stats, self.data_loader.test_teams, self._folder_prefix, float(epoch))
             print("Test stats:")
             print(spc.compressed_df_format(self.test_stats.loc[[self.test_stats.index[-1]]]))
             print("Best test stats:")

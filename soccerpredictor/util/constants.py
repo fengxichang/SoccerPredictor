@@ -26,7 +26,7 @@ BATCH_SIZE = 1
 # How long to wait before tracking performance of models
 TRACK_PERF_FROM_EPOCH = 10
 # Number of samples to predict ahead
-NPREDICT = 1
+NPREDICT = 10
 # Lr and dropout for team in test dataset
 LR = 3e-4
 DROPOUT = 0.0
