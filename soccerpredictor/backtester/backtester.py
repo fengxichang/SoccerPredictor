@@ -225,9 +225,9 @@ def determine_matches_to_bet_on(dfs: Dict[str, pd.DataFrame],
                     # Include only matches where the probabilities are higher than threshold when
                     # iterating over predict dataset, otherwise include all matches meeting the
                     # conditions for test dataset (they will be used to find best threshold).
-                    if dataset == Dataset.Predict.value and APPLY_THRESHOLD_SELECTION and \
-                            team1_pred_perc <= threshold:
-                        continue
+                    # if dataset == Dataset.Predict.value and APPLY_THRESHOLD_SELECTION and \
+                    #         team1_pred_perc <= threshold:
+                    #     continue
 
                     target = r["target"]
                     won = np.nan if (target is None or np.isnan(target)) else target == 1
@@ -243,9 +243,9 @@ def determine_matches_to_bet_on(dfs: Dict[str, pd.DataFrame],
                 # Model2 predicting win-or-draw and model1 predicting loss
                 elif team1_pred == 0 and team2_pred == 1 and \
                         (team2_odds > ignoreodds or np.isclose(team2_odds, ignoreodds)):
-                    if dataset == Dataset.Predict.value and APPLY_THRESHOLD_SELECTION and \
-                            team2_pred_perc <= threshold:
-                        continue
+                    # if dataset == Dataset.Predict.value and APPLY_THRESHOLD_SELECTION and \
+                    #         team2_pred_perc <= threshold:
+                    #     continue
 
                     target = opponent_row["target"].iloc[0]
                     won = np.nan if (target is None or np.isnan(target)) else target == 1

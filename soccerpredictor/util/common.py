@@ -375,7 +375,7 @@ def get_mismatched_teams(list1: List[str], list2: List[str]) -> List[str]:
     """
     return list((set(list1) | set(list2)) - (set(list1) & set(list2)))
 
-def saveMetric(train_stats, train_teams, test_stats, test_teams, model, epoch):
+def saveMetric(train_stats, train_teams, test_stats, test_teams, model):
     # 1.硬盘上创建连接 
     con = sqlite3.connect(f"file:./data/db/soccer.db?mode=rw", uri=True) 
 

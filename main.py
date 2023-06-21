@@ -52,7 +52,7 @@ def main() -> None:
                                 help="Number of last samples to discard for each team.")
     
     # 用作输入网络的数据窗口大小的时间步数。
-    trainer_parser.add_argument("--timesteps", type=int, action="store", default=20,
+    trainer_parser.add_argument("--timesteps", type=int, action="store", default=30,
                                 help="Number of timesteps to use as data window size for input to network.")
     
     # 是否不经过训练直接返回预测值
@@ -114,7 +114,7 @@ def main() -> None:
     # Common args for visualizer and backtester
     # 在预测哪支球队下注时，会忽略小于给定金额的赔率。
     for p in [visualizer_parser, backtester_parser]:
-        p.add_argument("--ignoreodds", type=float, action="store", default=1.10,
+        p.add_argument("--ignoreodds", type=float, action="store", default=1.15,
                        help="Ignores odds less than given amount when predicting which team to bet on.")
 
     args = parser.parse_args()
