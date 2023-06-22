@@ -400,7 +400,6 @@ def saveMetric(train_stats, train_teams, test_stats, test_teams, model):
                 cur.execute(sql, (str(uuid.uuid4()), model, t, 'test', float(index), float(loss_value), float(acc_value)))
                 #提交事务 
                 con.commit() 
-                print('插入成功')         
     except Exception as e: 
         print(e) 
         print('插入失败') 
