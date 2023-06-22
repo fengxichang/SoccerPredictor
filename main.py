@@ -73,7 +73,7 @@ def main() -> None:
                                 help="Specifies seed for rng.")
     
     # 保存模型的频率（历时的数量）。如果是0，则不进行中间保存。
-    trainer_parser.add_argument("--savefreq", type=int, action="store", default=50,
+    trainer_parser.add_argument("--savefreq", type=int, action="store", default=0,
                                 help="How often (number of epochs) to save models. No intermediate saving if 0.")
     
     # 打印当前摘要的频率（历时数）。如果是0，则没有中间打印。
