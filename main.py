@@ -7,6 +7,7 @@ from sqlite3 import OperationalError
 from string import ascii_uppercase
 import sys
 from typing import Optional
+import tensorflow as tf
 
 from soccerpredictor.trainer.dbmanager import SPDBManager
 from soccerpredictor.util.common import get_latest_models_dir, get_model_settings_file
@@ -52,7 +53,7 @@ def main() -> None:
                                 help="Number of last samples to discard for each team.")
     
     # 用作输入网络的数据窗口大小的时间步数。
-    trainer_parser.add_argument("--timesteps", type=int, action="store", default=30,
+    trainer_parser.add_argument("--timesteps", type=int, action="store", default=20,
                                 help="Number of timesteps to use as data window size for input to network.")
     
     # 是否不经过训练直接返回预测值
@@ -227,8 +228,7 @@ def set_rng_seed(seed: Optional[int]) -> None:
         random.seed(seed)
         import numpy as np
         np.random.seed(seed)
-        from tensorflow.compat.v1 import set_random_seed
-        set_random_seed(seed)
+        tf.compat.v1.set_random_seed(seed)
         print(f"Running with seed: {seed}")
 
 

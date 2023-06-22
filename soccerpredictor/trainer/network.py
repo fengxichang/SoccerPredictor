@@ -2,7 +2,6 @@ import numpy as np
 from typing import Any, Dict, List, Tuple
 
 import tensorflow as tf
-from tensorflow.compat.v1 import Session
 
 import keras.backend as K
 from keras.initializers import glorot_uniform
@@ -33,7 +32,7 @@ class SPNetwork:
 
     """
 
-    def __init__(self, team_name: str, target_team: bool, session: Session, lenc_bitlen: int) -> None:
+    def __init__(self, team_name: str, target_team: bool, session: tf.compat.v1.Session, lenc_bitlen: int) -> None:
         """
 
         :param team_name: Team's name the network is created for.

@@ -32,10 +32,10 @@ LR = 3e-4
 DROPOUT = 0.1
 # Lr and dropout for teams not in test dataset
 NONTEST_LR = 0.01
-NONTEST_DROPOUT = 0.0
+NONTEST_DROPOUT = 0.1
 # Min and max season used
 MIN_SEASON = 2010
-MAX_SEASON = 2018
+MAX_SEASON = 2022
 
 # File names and dirs
 DATA_DIR = "./data/"

@@ -2,8 +2,7 @@ import numpy as np
 import pandas as pd
 from typing import Dict
 
-from tensorflow.compat.v1 import Session
-from tensorflow.compat.v1.summary import FileWriter, Summary
+import tensorflow as tf
 
 from soccerpredictor.util.config import SPConfig
 from soccerpredictor.util.constants import TB_ROOT_DIR, TB_TRAIN_DIR, TB_MAX_QUEUE, TB_FLUSH_SECS, \
@@ -25,7 +24,7 @@ class SPTensorboard:
 
     """
 
-    def __init__(self, team_name: str, target_team: bool, session: Session, folder_prefix: str) -> None:
+    def __init__(self, team_name: str, target_team: bool, session: tf.compat.v1.Session, folder_prefix: str) -> None:
         """
 
         :param team_name: Model's team name.
@@ -45,7 +44,7 @@ class SPTensorboard:
 
         with self._session.as_default(), self._session.graph.as_default():
             # FileWriter for tracking train stats is used for every model
-            self._filewriter_train = FileWriter(f"{base_dir}{TB_TRAIN_DIR}{self._team_name}",
+            self._filewriter_train = tf.compat.v1.summary.FileWriter(f"{base_dir}{TB_TRAIN_DIR}{self._team_name}",
                                                 session=self._session,
                                                 max_queue=TB_MAX_QUEUE,
                                                 flush_secs=TB_FLUSH_SECS)
@@ -55,19 +54,19 @@ class SPTensorboard:
 
             # FileWriters for logging test stats are available only for teams included in test dataset
             if self._target_team:
-                self._filewriter_test = FileWriter(f"{base_dir}{TB_TEST_DIR}{self._team_name}",
+                self._filewriter_test = tf.compat.v1.summary.FileWriter(f"{base_dir}{TB_TEST_DIR}{self._team_name}",
                                                    session=self._session,
                                                    max_queue=TB_MAX_QUEUE,
                                                    flush_secs=TB_FLUSH_SECS)
 
-                self._filewriter_best_test = FileWriter(f"{base_dir}{TB_TEST_DIR}{self._team_name}",
+                self._filewriter_best_test = tf.compat.v1.summary.FileWriter(f"{base_dir}{TB_TEST_DIR}{self._team_name}",
                                                         session=self._session,
                                                         max_queue=TB_MAX_QUEUE,
                                                         flush_secs=TB_FLUSH_SECS)
 
             # If team is not in the test dataset then track its best stats on train dataset
             else:
-                self._filewriter_best_train = FileWriter(f"{base_dir}{TB_TRAIN_DIR}{self._team_name}",
+                self._filewriter_best_train = tf.compat.v1.summary.FileWriter(f"{base_dir}{TB_TRAIN_DIR}{self._team_name}",
                                                          session=self._session,
                                                          max_queue=TB_MAX_QUEUE,
                                                          flush_secs=TB_FLUSH_SECS)
@@ -83,7 +82,7 @@ class SPTensorboard:
             return
 
         with self._session.as_default(), self._session.graph.as_default():
-            summary = Summary()
+            summary = tf.compat.v1.Summary()
             summary.value.add(tag=f"{self._prefix}{self._team_name}/_loss", simple_value=metrics["loss"])
             summary.value.add(tag=f"{self._prefix}{self._team_name}/_acc", simple_value=metrics["acc"])
             self._filewriter_train.add_summary(summary, epoch)
@@ -104,7 +103,7 @@ class SPTensorboard:
             with self._session.as_default(), self._session.graph.as_default():
                 epochs_range = range(0, epoch+1) if best_epoch is None else range(best_epoch, epoch+1)
                 for i in epochs_range:
-                    summary = Summary()
+                    summary = tf.compat.v1.Summary()
                     for m in train_stats.columns.get_level_values("metric"):
                         summary.value.add(tag=f"{self._prefix}{self._team_name}/best_{m}",
                                           simple_value=train_stats.loc[i, (self._team_name, m)])
@@ -122,7 +121,7 @@ class SPTensorboard:
 
         with self._session.as_default(), self._session.graph.as_default():
             if self._target_team:
-                summary = Summary()
+                summary = tf.compat.v1.Summary()
                 summary.value.add(tag=f"{self._prefix}{self._team_name}/_loss", simple_value=metrics["loss"])
                 summary.value.add(tag=f"{self._prefix}{self._team_name}/_acc", simple_value=metrics["acc"])
                 self._filewriter_test.add_summary(summary, epoch)
@@ -143,7 +142,7 @@ class SPTensorboard:
             with self._session.as_default(), self._session.graph.as_default():
                 epochs_range = range(0, epoch+1) if best_epoch is None else range(best_epoch, epoch+1)
                 for i in epochs_range:
-                    summary = Summary()
+                    summary = tf.compat.v1.Summary()
                     for m in test_stats.columns.get_level_values("metric"):
                         summary.value.add(tag=f"{self._prefix}{self._team_name}/best_{m}",
                                           simple_value=test_stats.loc[i, (self._team_name, m)])
