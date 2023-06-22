@@ -26,16 +26,16 @@ BATCH_SIZE = 1
 # How long to wait before tracking performance of models
 TRACK_PERF_FROM_EPOCH = 10
 # Number of samples to predict ahead
-NPREDICT = 30
+NPREDICT = 40
 # Lr and dropout for team in test dataset
 LR = 3e-4
-DROPOUT = 0.0
+DROPOUT = 0.1
 # Lr and dropout for teams not in test dataset
 NONTEST_LR = 0.01
 NONTEST_DROPOUT = 0.0
 # Min and max season used
 MIN_SEASON = 2010
-MAX_SEASON = 2017
+MAX_SEASON = 2018
 
 # File names and dirs
 DATA_DIR = "./data/"

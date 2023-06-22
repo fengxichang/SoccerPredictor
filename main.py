@@ -44,7 +44,7 @@ def main() -> None:
                                 help="Number of epochs to train model for.")
     
     # 每个队最后用来做test的样本数量
-    trainer_parser.add_argument("--ntest", type=int, action="store", default=10,
+    trainer_parser.add_argument("--ntest", type=int, action="store", default=20,
                                 help="Number of last samples used for testing for each team.")
     
     # 每个队最后丢弃的样本数量
