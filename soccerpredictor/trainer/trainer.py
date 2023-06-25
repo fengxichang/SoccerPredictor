@@ -128,6 +128,7 @@ class SPTrainer:
         df_train, df_test, df_predict = self.data_loader.load_and_process_fixtures_data()
 
         # Fit scalers on train dataset only
+        # 数据标准化
         self.data_loader.fit_scalers(df_train)
 
         # Build models for all teams
@@ -140,6 +141,7 @@ class SPTrainer:
 
         # Get fixtures ids where each team played in (separately for each dataset) and store them
         # Ids for test and predict datasets are properly aligned to fit match sequences
+        # 为每只球队准备数据
         for t in self.data_loader.train_teams:
             fixtures_ids = spc.get_fixtures_ids_from_df(df_train, t)
             team_matches_data = self.data_loader.load_and_process_team_data(Dataset.Train,

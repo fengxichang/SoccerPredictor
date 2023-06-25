@@ -23,6 +23,10 @@ class SPNetwork:
     The idea is that the main head contains weights for current team and the head2 weights are
     dynamically changed according to opponent the current team plays against.
 
+    网络由两个头组成--主头和头2，它们被串联到最终输出层。
+    我们的想法是，主头包含当前球队的权重，而第二头的权重是根据当前球队的对手动态变化的。
+    根据当前球队的对手动态地改变
+
     Both heads consist of single stateful LSTM layer and Dense layer. The Dense layer uses ELU
     activation. Both layers use L2 regularization.
     Output layer uses softmax activation with 2 output classes.

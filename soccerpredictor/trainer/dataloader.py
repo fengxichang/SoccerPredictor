@@ -105,7 +105,7 @@ class SPDataLoader:
         df = self._drop_last_season_championship_matches(df)
 
         self.teams = get_unique_teams(df)
-        # 获取数据框中上个赛季PL的独特球队名称的列表。
+        # 获取数据框中上个赛季PL的唯一球队名称的列表。
         self.last_season_teams = get_last_season_unique_teams(df)
         # Get fixtures ids for each team
         # 获取每支球队的比赛数据id
@@ -172,6 +172,7 @@ class SPDataLoader:
         # self._check_season_gaps_in_teams_matches(df)
 
         # Split original dataset into train, test, and predict datasets
+        # 划分训练集，测试集，预测集
         df_train, df_test, df_predict = self._mask_out_dataset(df)
         self._get_unique_teams_from_datasets(df_train, df_test, df_predict)
 
