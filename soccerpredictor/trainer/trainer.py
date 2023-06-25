@@ -88,6 +88,7 @@ class SPTrainer:
         在给定的epochs运行模型的训练。
         """
         st = time.time()
+        # 加载预处理数据，并建立模型
         df_train, df_test, df_predict = self._preload()
 
         # Just load models and make predictions

@@ -13,7 +13,7 @@ FEATURES_TO_LENC = ["team", "future_opponent"]
 TRAINING_METRICS = ["loss", "acc"]
 VERBOSITY_LEVELS = range(0, 2)
 # Whether to apply best threshold selection on predicted matches
-APPLY_THRESHOLD_SELECTION = True
+APPLY_THRESHOLD_SELECTION = False
 
 # Additional model settings:
 # Force ConfigProto single threads settings
