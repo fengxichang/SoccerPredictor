@@ -534,7 +534,7 @@ class SPTrainer:
         # Save stats
         for t in teams:
             for m in metrics:
-                self.predictions[predict_dataset].loc[0:len(predict_metrics[t]),
+                self.predictions[predict_dataset].loc[0:len(predict_metrics[t][m]),
                                                       (t, m)] = pd.Series(predict_metrics[t][m])
 
     def _log_predict_metrics(self,
