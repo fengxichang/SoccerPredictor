@@ -726,6 +726,7 @@ class SPTrainer:
                 "config": vars(self._config),
                 "best_epochs": {t: m.best_epoch for t, m in self.models.items()},
                 "runs": {},
+                "units": UNITS
             }
 
         # Settings saved each run

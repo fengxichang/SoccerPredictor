@@ -118,8 +118,9 @@ class SPNetwork:
 
         # Main head
         head1_input_concat = concatenate(inputs=head1_inputs, name="head1_input_concat")
-        head1_rnn1 = LSTM(35,
-                          recurrent_dropout=self._dropout,
+        head1_rnn1 = LSTM(UNITS,
+                          dropout=self._dropout,
+                          recurrent_dropout=0.5,
                           stateful=STATEFUL,
                           return_sequences=False,
                           kernel_regularizer=l2(0.01),
@@ -133,8 +134,9 @@ class SPNetwork:
 
         # Head2
         head2_input_concat = concatenate(inputs=head2_inputs, name="head2_input_concat")
-        head2_rnn1 = LSTM(35,
-                          recurrent_dropout=self._dropout,
+        head2_rnn1 = LSTM(UNITS,
+                          dropout=self._dropout,
+                          recurrent_dropout=0.5,
                           stateful=STATEFUL,
                           return_sequences=False,
                           kernel_regularizer=l2(0.01),

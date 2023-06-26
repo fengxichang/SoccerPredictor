@@ -23,10 +23,11 @@ FORCE_SINGLE_CPU = True
 RANDOM_WEIGHTS = False
 STATEFUL = True
 BATCH_SIZE = 1
+UNITS = 32
 # How long to wait before tracking performance of models
 TRACK_PERF_FROM_EPOCH = 10
 # Number of samples to predict ahead
-NPREDICT = 40
+NPREDICT = 5
 # Lr and dropout for team in test dataset
 LR = 3e-4
 DROPOUT = 0.1
