@@ -1,5 +1,6 @@
 from argparse import Namespace
 from typing import Any, Dict
+from soccerpredictor.util.constants import UNITS
 
 
 class SPSingleton(type):
@@ -45,6 +46,7 @@ class SPConfig(metaclass=SPSingleton):
         self.seed = None
         self.timesteps = None
         self.verbose = None
+        self.units = UNITS
 
     def restore_args(self, model_settings: Dict[str, Any]) -> None:
         """
