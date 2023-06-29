@@ -7,7 +7,7 @@ FOLDER_NAME_PATTERN = r"([a-zA-Z]+)_(\d{4}-\d{2}-\d{2}T\d{2}-\d{2}-\d{2})_(\d+)$
 # Columns names for bet on matches dataframe
 BET_ON_MATCHES_COLS = ["id", "date", "home", "away", "bet_on_team", "pred_perc", "odds_wd", "bet_won"]
 # Features which should be scaled
-FEATURES_TO_SCALE = ["rating", "goals", "shots", "errors", "red_cards", "season", "odds_wd"]
+FEATURES_TO_SCALE = ["rating", "goals", "shots", "errors", "red_cards", "season", "odds_wd", "opponent_goals", "opponent_shots", "opponent_rating"]
 # Features which should be encoded
 FEATURES_TO_LENC = ["team", "future_opponent"]
 TRAINING_METRICS = ["loss", "acc"]
@@ -72,7 +72,10 @@ FEATURES_COMMON = [
     "errors",
     "red_cards",
     "future_ashome",
-    "future_opponent"
+    "future_opponent",
+    "opponent_goals",
+    "opponent_shots",
+    "opponent_rating",
 ]
 
 # Features used specifically for current target variable

@@ -35,7 +35,10 @@ class SPDBManager:
                    ts1.rating AS home_rating, ts2.rating AS away_rating,
                    ts1.errors AS home_errors, ts2.errors AS away_errors, 
                    ts1.red_cards AS home_red_cards, ts2.red_cards AS away_red_cards,
-                   ts1.shots AS home_shots, ts2.shots AS away_shots
+                   ts1.shots AS home_shots, ts2.shots AS away_shots,
+                   ts1.opponent_goals AS home_opponent_goals, ts1.opponent_shots AS home_opponent_shots,
+                   ts1.opponent_rating AS home_opponent_rating, ts2.opponent_rating AS away_opponent_rating,
+                   ts2.opponent_goals As away_opponent_goals, ts2.opponent_shots AS away_opponent_shots 
             FROM Fixtures f
             JOIN Teams t1 ON f.homeTeamID = t1.id
             JOIN Teams t2 ON f.awayTeamID = t2.id
@@ -59,7 +62,8 @@ class SPDBManager:
         df = pd.read_sql("""
             SELECT f.id, f.date, f.season, f.league, f.homeTeamID, f.awayTeamID,
                    t1.name AS home, t2.name AS away, f.home_goals, f.away_goals, f.winner,
-                   ts.rating, ts.goals, ts.errors, ts.red_cards, ts.shots, f.oddsDC_1X, f.oddsDC_X2
+                   ts.rating, ts.goals, ts.errors, ts.red_cards, ts.shots, f.oddsDC_1X, f.oddsDC_X2,
+                   ts.opponent_goals, ts.opponent_shots, ts.opponent_rating 
             FROM TeamStats ts
             JOIN Fixtures f ON f.id = ts.fixtureID 
             JOIN Teams t1 ON f.homeTeamID = t1.id
