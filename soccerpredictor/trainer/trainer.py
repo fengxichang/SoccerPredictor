@@ -270,38 +270,50 @@ class SPTrainer:
                 self.models[t].matches_data[dataset]["idx"] = 0
 
             # Loop over matches
-            for i, r in df_train.iterrows():
-                if verbose and self._verbose > 0:
-                    print(f"{i:04d}: {r['id']} {r['date']} {r['season']} {r['league']} {r['home']} {r['away']}")
-                team1 = r["home"]
-                team2 = r["away"]
+            for t in teams:
+                x = 0
+                for i, r in df_train[(df_train["home"]==t) | (df_train["away"]==t)].iterrows():
+                    if verbose and self._verbose > 0:
+                        print(f"{i:04d}: {r['id']} {r['date']} {r['season']} {r['league']} {r['home']} {r['away']}")
+                    team1 = r["home"]
 
-                # Set team2 weights for both teams to avoid using newly changed weights of home team for
-                # the away team and vice versa
-                self.models[team1].set_network_head2_params(team2)
-                self.models[team2].set_network_head2_params(team1)
+                    if (self._timesteps + x) >= len(df_train[(df_train["home"]==team1) | (df_train["away"]==team1)]):
+                        x += 1
+                        continue
+                    # 查询这个数据集target对应的team2
+                    targetFixture = df_train[(df_train["home"]== team1) | (df_train["away"]== team1)].iloc[self._timesteps + x]
+                    if targetFixture.loc["home"] == team1:
+                        team2 = targetFixture.loc["away"]
+                    else:
+                        team2 = targetFixture.loc["home"]
 
-                # Train home model
-                x_input, y_input = self.models[team1].form_input(dataset, self.models[team2])
-                if x_input and y_input:
-                    loss, acc = self.models[team1].train_on_batch(x_input, y_input)
-                    self.models[team1].store_network_head2_states(team2)
+                    # Set team2 weights for both teams to avoid using newly changed weights of home team for
+                    # the away team and vice versa
+                    self.models[team1].set_network_head2_params(team2)
+                    self.models[team2].set_network_head2_params(team1)
 
-                    train_metrics[team1]["loss"].append(loss)
-                    train_metrics[team1]["acc"].append(acc)
+                    # Train home model
+                    x_input, y_input = self.models[team1].form_input(dataset, self.models[team2])
+                    if x_input and y_input:
+                        loss, acc = self.models[team1].train_on_batch(x_input, y_input)
+                        self.models[team1].store_network_head2_states(team2)
 
-                # Train away model
-                x_input, y_input = self.models[team2].form_input(dataset, self.models[team1])
-                if x_input and y_input:
-                    loss, acc = self.models[team2].train_on_batch(x_input, y_input)
-                    self.models[team2].store_network_head2_states(team1)
+                        train_metrics[team1]["loss"].append(loss)
+                        train_metrics[team1]["acc"].append(acc)
 
-                    train_metrics[team2]["loss"].append(loss)
-                    train_metrics[team2]["acc"].append(acc)
+                    # Train away model
+                    x_input, y_input = self.models[team2].form_input(dataset, self.models[team1])
+                    if x_input and y_input:
+                        loss, acc = self.models[team2].train_on_batch(x_input, y_input)
+                        self.models[team2].store_network_head2_states(team1)
 
-                # Increment index to data
-                self.models[team1].matches_data[dataset]["idx"] += 1
-                self.models[team2].matches_data[dataset]["idx"] += 1
+                        train_metrics[team2]["loss"].append(loss)
+                        train_metrics[team2]["acc"].append(acc)
+
+                    # Increment index to data
+                    self.models[team1].matches_data[dataset]["idx"] += 1
+                    self.models[team2].matches_data[dataset]["idx"] += 1
+                    x += 1
 
             # Track epochs passed
             self._total_epochs_passed += 1

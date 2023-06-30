@@ -332,8 +332,12 @@ class SPModel:
         """
         # Get current data chunk based on index position for both models
         i = self.matches_data[dataset]["idx"]
+        if i >= len(self.matches_data[dataset]["data"]):
+            return None, None
         d1 = self.matches_data[dataset]["data"][i]
         j = team2_model.matches_data[dataset]["idx"]
+        if j >= len(team2_model.matches_data[dataset]["data"]):
+            return None, None
         d2 = team2_model.matches_data[dataset]["data"][j]
 
         x_input = None
