@@ -27,7 +27,7 @@ UNITS = 32
 # How long to wait before tracking performance of models
 TRACK_PERF_FROM_EPOCH = 10
 # Number of samples to predict ahead
-NPREDICT = 8
+NPREDICT = 20
 # Lr and dropout for team in test dataset
 LR = 3e-4
 DROPOUT = 0.1
