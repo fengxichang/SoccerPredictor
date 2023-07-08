@@ -356,49 +356,37 @@ class SPTrainer:
             self.models[t].matches_data[dataset]["idx"] = 0
 
         # Loop over matches
-        for t in self.data_loader.test_teams:
-            x = 0
-            for i, r in df_test[(df_test["home"]==t) | (df_test["away"]==t)].iterrows():
-                if verbose and self._verbose > 0:
-                    print(f"{i:04d}: {r['id']} {r['date']} {r['season']} {r['league']} {r['home']} {r['away']}")
+        for i, r in df_test.iterrows():
+            if verbose and self._verbose > 0:
+                print(f"{i:04d}: {r['id']} {r['date']} {r['season']} {r['league']} {r['home']} {r['away']}")
 
-                team1 = r["home"]
-                if (self._timesteps + x) >= len(df_test[(df_test["home"]==team1) | (df_test["away"]==team1)]):
-                        x += 1
-                        continue
-                # 查询这个数据集target对应的team2
-                targetFixture = df_test[(df_test["home"]== team1) | (df_test["away"]== team1)].iloc[self._timesteps + x]
-                if targetFixture.loc["home"] == team1:
-                    team2 = targetFixture.loc["away"]
-                else:
-                    team2 = targetFixture.loc["home"]
-                team2 = r["away"]
+            team1 = r["home"]
+            team2 = r["away"]
 
-                self.models[team1].set_network_head2_params(team2)
-                self.models[team2].set_network_head2_params(team1)
+            self.models[team1].set_network_head2_params(team2)
+            self.models[team2].set_network_head2_params(team1)
 
-                # Test home model
-                # x_input should not be none for test dataset
-                x_input, y_input = self.models[team1].form_input(dataset, self.models[team2])
-                if x_input:
-                    loss, acc = self.models[team1].network.test_on_batch(x_input, y_input)
-                    self.models[team1].store_network_head2_states(team2)
+            # Test home model
+            # x_input should not be none for test dataset
+            x_input, y_input = self.models[team1].form_input(dataset, self.models[team2])
+            if x_input:
+                loss, acc = self.models[team1].network.test_on_batch(x_input, y_input)
+                self.models[team1].store_network_head2_states(team2)
 
-                    test_metrics[team1]["loss"].append(loss)
-                    test_metrics[team1]["acc"].append(acc)
+                test_metrics[team1]["loss"].append(loss)
+                test_metrics[team1]["acc"].append(acc)
 
-                # Test away model
-                x_input, y_input = self.models[team2].form_input(dataset, self.models[team1])
-                if x_input:
-                    loss, acc = self.models[team2].network.test_on_batch(x_input, y_input)
-                    self.models[team2].store_network_head2_states(team1)
+            # Test away model
+            x_input, y_input = self.models[team2].form_input(dataset, self.models[team1])
+            if x_input:
+                loss, acc = self.models[team2].network.test_on_batch(x_input, y_input)
+                self.models[team2].store_network_head2_states(team1)
 
-                    test_metrics[team2]["loss"].append(loss)
-                    test_metrics[team2]["acc"].append(acc)
+                test_metrics[team2]["loss"].append(loss)
+                test_metrics[team2]["acc"].append(acc)
 
-                self.models[team1].matches_data[dataset]["idx"] += 1
-                self.models[team2].matches_data[dataset]["idx"] += 1
-                x += 1
+            self.models[team1].matches_data[dataset]["idx"] += 1
+            self.models[team2].matches_data[dataset]["idx"] += 1
 
         # Append metrics for current epoch
         for t in self.data_loader.test_teams:
